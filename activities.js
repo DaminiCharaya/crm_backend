@@ -82,4 +82,4 @@ module.exports = {
 //     end_date DATE,
 //     start_time TIME,
 //     end_time TIME
-// );
+// )

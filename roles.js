@@ -64,4 +64,4 @@ module.exports = {
 //     role_id INT PRIMARY KEY,
 //     role VARCHAR(50) NOT NULL,
 //     permissions VARCHAR(50) NOT NULL
-// );
+// )
