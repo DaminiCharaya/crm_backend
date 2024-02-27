@@ -1,13 +1,7 @@
-const Pool = require('pg').Pool
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'postgres',
-  password: 'postgres',
-  port: 5432,
-})
+import { query } from "../config/db"
+
 const getRoles = (request, response) => {
-  pool.query('SELECT * FROM roles ORDER BY role_id ASC', (error, results) => {
+  query('SELECT * FROM roles ORDER BY role_id ASC', (error, results) => {
     if (error) {
       throw error
     }
@@ -18,7 +12,7 @@ const getRoles = (request, response) => {
 const createRole = (request, response) => {
   const { role_id, role, permissions } = request.body
 
-  pool.query('INSERT INTO roles (role_id, role, permissions ) VALUES ($1, $2, $3) RETURNING *', [role_id, role, permissions ], (error, results) => {
+  query('INSERT INTO roles (role_id, role, permissions ) VALUES ($1, $2, $3) RETURNING *', [role_id, role, permissions ], (error, results) => {
     if (error) {
       throw error
     }
@@ -30,7 +24,7 @@ const updateRole = (request, response) => {
   const id = parseInt(request.params.role_id)
   const { role, permissions  } = request.body
 
-  pool.query(
+  query(
     'UPDATE roles SET role = $1, permissions = $2 WHERE role_id = $3',
     [role, permissions, id ],
     (error, results) => {
@@ -45,7 +39,7 @@ const updateRole = (request, response) => {
 const deleteRole = (request, response) => {
   const id = parseInt(request.params.role_id)
 
-  pool.query('DELETE FROM roles WHERE role_id = $1', [id], (error, results) => {
+  query('DELETE FROM roles WHERE role_id = $1', [id], (error, results) => {
     if (error) {
       throw error
     }
@@ -53,7 +47,7 @@ const deleteRole = (request, response) => {
   })
 }
 
-module.exports = {
+export default {
   getRoles,
   createRole,
   updateRole,

@@ -1,13 +1,7 @@
-const Pool = require('pg').Pool
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'postgres',
-  password: 'postgres',
-  port: 5432,
-})
+import { query } from "../config/db"
+
 const getActivities = (request, response) => {
-  pool.query('SELECT * FROM activities ORDER BY activity_id ASC', (error, results) => {
+  query('SELECT * FROM activities ORDER BY activity_id ASC', (error, results) => {
     if (error) {
       throw error
     }
@@ -18,7 +12,7 @@ const getActivities = (request, response) => {
 const getActivityById = (request, response) => {
   const id = parseInt(request.params.activity_id)
 
-  pool.query('SELECT * FROM activities WHERE activity_id = $1', [id], (error, results) => {
+  query('SELECT * FROM activities WHERE activity_id = $1', [id], (error, results) => {
     if (error) {
       throw error
     }
@@ -29,7 +23,7 @@ const getActivityById = (request, response) => {
 const createActivity = (request, response) => {
   const { activity_id, activity_type, activity_status, last_modified, start_date, end_date, start_time, end_time } = request.body
 
-  pool.query('INSERT INTO activities (activity_id, activity_type, activity_status, start_date, end_date, start_time, end_time) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [activity_id, activity_type, activity_status, start_date, end_date, start_time, end_time], (error, results) => {
+  query('INSERT INTO activities (activity_id, activity_type, activity_status, start_date, end_date, start_time, end_time) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [activity_id, activity_type, activity_status, start_date, end_date, start_time, end_time], (error, results) => {
     if (error) {
       throw error
     }
@@ -41,7 +35,7 @@ const updateActivity = (request, response) => {
   const id = parseInt(request.params.activity_id)
   const { activity_type, activity_status, last_modified, start_date, end_date, start_time, end_time } = request.body
 
-  pool.query(
+  query(
     'UPDATE activities SET activity_type = $1, activity_status = $2, last_modified = $3, start_date =$4, end_date = $5, start_time = $6, end_time = $7 WHERE activity_id = $8',
     [activity_type, activity_status, last_modified, start_date, end_date, start_time, end_time, id],
     (error, results) => {
@@ -56,7 +50,7 @@ const updateActivity = (request, response) => {
 const deleteActivity = (request, response) => {
   const id = parseInt(request.params.activity_id)
 
-  pool.query('DELETE FROM activities WHERE activity_id = $1', [id], (error, results) => {
+  query('DELETE FROM activities WHERE activity_id = $1', [id], (error, results) => {
     if (error) {
       throw error
     }
@@ -64,7 +58,7 @@ const deleteActivity = (request, response) => {
   })
 }
 
-module.exports = {
+export default {
  getActivities,
  getActivityById,
  createActivity,

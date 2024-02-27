@@ -1,13 +1,7 @@
-const Pool = require('pg').Pool
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'postgres',
-  password: 'postgres',
-  port: 5432,
-})
+import { query } from "../config/db"
+
 const getUsers = (request, response) => {
-  pool.query('SELECT * FROM users ORDER BY user_id ASC', (error, results) => {
+  query('SELECT * FROM users ORDER BY user_id ASC', (error, results) => {
     if (error) {
       throw error
     }
@@ -18,7 +12,7 @@ const getUsers = (request, response) => {
 const getUserById = (request, response) => {
   const id = parseInt(request.params.user_id)
 
-  pool.query('SELECT * FROM users WHERE user_id = $1', [id], (error, results) => {
+  query('SELECT * FROM users WHERE user_id = $1', [id], (error, results) => {
     if (error) {
       throw error
     }
@@ -29,7 +23,7 @@ const getUserById = (request, response) => {
 const createUser = (request, response) => {
   const { user_id, first_name, last_name, email, phone_number, active_status, role_id } = request.body
 
-  pool.query('INSERT INTO users (user_id, first_name, last_name, email, phone_number, active_status, role_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [user_id, first_name, last_name, email, phone_number, active_status, role_id], (error, results) => {
+  query('INSERT INTO users (user_id, first_name, last_name, email, phone_number, active_status, role_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [user_id, first_name, last_name, email, phone_number, active_status, role_id], (error, results) => {
     if (error) {
       throw error
     }
@@ -42,7 +36,7 @@ const updateUser = (request, response) => {
   const id = parseInt(request.params.user_id)
   const { first_name, last_name, email, phone_number, active_status } = request.body
 
-  pool.query(
+  query(
     'UPDATE users SET first_name = $1, last_name = $2, email = $3, phone_number = $4, active_status = $5 WHERE user_id = $6',
     [first_name, last_name, email, phone_number, active_status, id],
     (error, results) => {
@@ -57,7 +51,7 @@ const updateUser = (request, response) => {
 const deleteUser = (request, response) => {
   const id = parseInt(request.params.user_id)
 
-  pool.query('DELETE FROM users WHERE user_id = $1', [id], (error, results) => {
+  query('DELETE FROM users WHERE user_id = $1', [id], (error, results) => {
     if (error) {
       throw error
     }
@@ -65,7 +59,7 @@ const deleteUser = (request, response) => {
   })
 }
 
-module.exports = {
+export default {
   getUsers,
   getUserById,
   createUser,
